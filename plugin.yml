@@ -1,6 +1,6 @@
 name: Emotes
 main: io.github.com.revenantgaze.emoteplugin.Main
-version: 1.5 BETA 1.0
+version: 1.5
 author: RevenantGaze
 website: http://dev.bukkit.org/bukkit-plugins/emotes/
 commands:
@@ -131,6 +131,7 @@ permissions:
       emotes.command.emotes.cooldown.change: true
       emotes.command.emotes.cooldown.default: true
       emotes.command.emotes.cooldown.show: true
+      emotes.command.emotes.version: true
       emotes.command.emotes.use: true
       emotes.command.facepalm: true
       emotes.command.flail: true
@@ -157,6 +158,7 @@ permissions:
       emotes.command.emotes.cooldown.change: true
       emotes.command.emotes.cooldown.default: true
       emotes.command.emotes.cooldown.show: true
+      emotes.command.emotes.version: true
       emotes.command.emotes.use: true
       emotes.command.facepalm: true
       emotes.command.flail: true
@@ -184,6 +186,7 @@ permissions:
       emotes.command.emotes.cooldown.change: true
       emotes.command.emotes.cooldown.default: true
       emotes.command.emotes.cooldown.show: true
+      emotes.command.emotes.version: true
       emotes.command.emotes.use: true
     default: op
   emotes.command.emotes.cooldown:
@@ -204,6 +207,9 @@ permissions:
     default: op
   emotes.command.emotes.cooldown.show:
     description: Gives access to /emotes cooldown show
+    default: op
+  emotes.command.emotes.version:
+    description: Gives access to /emotes version
     default: op
   emotes.command.emotes.use:
     description: Gives access to /emotes
