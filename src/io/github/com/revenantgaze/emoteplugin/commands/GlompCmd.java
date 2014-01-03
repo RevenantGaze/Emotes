@@ -11,76 +11,118 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class GlompCmd implements CommandExecutor {
-	
-	public Main plugin;
-	
-	public GlompCmd(Main instance) {
-		
-		plugin = instance;
-	
-	}
-	
-	@Override
-	public boolean onCommand(CommandSender sender, Command cmd,
-			String label, String[] args) {
-		
-		int CooldownValue = plugin.getConfig().getInt("Cooldown");
-		
-		if (cmd.getName().equalsIgnoreCase("glomp")) {
-		
-			Player you = (Player) sender;
-			
-			if (Cooldown.tryCooldown(you, "MagicHand", (CooldownValue * 1000))) {
-		
-				if ((args.length == 1) && (Bukkit.getPlayerExact(args[0]) != null)){
 
-					Player target = sender.getServer().getPlayer(args[0]);
-				
-					String user1 = you.getName();
-					String user2 = target.getName();
-						
-						Bukkit.getServer().broadcastMessage(ChatColor.GOLD + "[Emotes] " + ChatColor.GREEN + user1 + " glomps " + user2 + "! It's Super effective!");
-					
+	public Main plugin;
+
+	public GlompCmd(Main instance) {
+
+		plugin = instance;
+
+	}
+
+	@Override
+	public boolean onCommand(CommandSender sender, Command cmd, String label,
+			String[] args) {
+
+		int CooldownValue = plugin.getConfig().getInt("cooldown.cooldown");
+
+		if (cmd.getName().equalsIgnoreCase("glomp")) {
+
+			if (sender instanceof Player) {
+
+				Player you = (Player) sender;
+
+				Long lastEmote = Cooldown.lastEmote.get(you.getName());
+
+				if (lastEmote == null
+						|| lastEmote + (CooldownValue * 1000) < System
+								.currentTimeMillis()) {
+
+					if ((args.length == 1)
+							&& (Bukkit.getPlayerExact(args[0]) != null)) {
+
+						Player target = sender.getServer().getPlayer(args[0]);
+
+						String user1 = you.getName();
+						String user2 = target.getName();
+
+						Bukkit.getServer().broadcastMessage(
+								ChatColor.GOLD + "[Emotes] " + ChatColor.GREEN
+										+ user1 + " glomps " + user2
+										+ "! It's Super effective!");
+
+					}
+
+					else if (args.length == 0) {
+
+						String user1 = you.getName();
+
+						Bukkit.getServer()
+								.broadcastMessage(
+										ChatColor.GOLD
+												+ "[Emotes] "
+												+ ChatColor.GREEN
+												+ user1
+												+ " glomps a block of cobblestone! It's not very effective");
+
+					}
+
+					else if (args.length > 1) {
+
+						you.sendMessage(ChatColor.GOLD + "[Emotes] "
+								+ ChatColor.RED + "Too many arguments!");
+						you.sendMessage(ChatColor.GOLD + "[Emotes] "
+								+ ChatColor.RED + "Usage: /glomp <player>");
+
 						return true;
-				}
-			
-				else if (args.length == 0) {
-				
-					String user1 = you.getName();
-						
-						Bukkit.getServer().broadcastMessage(ChatColor.GOLD + "[Emotes] " + ChatColor.GREEN + user1 + " glomps a block of cobblestone! It's not very effective");
-								
+
+					}
+
+					else {
+
+						you.sendMessage(ChatColor.GOLD + "[Emotes] "
+								+ ChatColor.RED + "This player is not online!");
+
 						return true;
-				}
-		
-				else {
-			
-					you.sendMessage(ChatColor.GOLD + "[Emotes] " + ChatColor.RED + "This player is not online!");
-				
+
+					}
+
+					Cooldown.lastEmote.put(you.getName(),
+							System.currentTimeMillis());
+
 					return true;
-			
+
 				}
-				
+
+				else {
+
+					you.sendMessage(ChatColor.GOLD
+							+ "[Emotes] "
+							+ ChatColor.RED
+							+ "You have "
+							+ (CooldownValue - ((System.currentTimeMillis() - (Cooldown.lastEmote
+									.get(you.getName()))) / 1000))
+							+ " seconds left.");
+
+					return true;
+
+				}
+
 			}
-			
+
 			else {
-				
-				you.sendMessage(ChatColor.GOLD + "[Emotes] " + ChatColor.RED + "You have " + (Cooldown.getCooldown(you, "MagicHand") / 1000) + " seconds left.");
-			
+
+				sender.sendMessage(ChatColor.GOLD + "[Emotes] " + ChatColor.RED
+						+ "You can't use emotes from the console!");
+
 				return true;
-				
+
 			}
-			
+
 		}
-		
-		else {
-			
-			sender.sendMessage(ChatColor.GOLD + "[Emotes] " + ChatColor.RED + "You don't have permisison");
-			
-			return true;
-			
-		}
-			
+
+		return false;
+
 	}
 
 }

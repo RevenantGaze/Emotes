@@ -23,11 +23,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class Main extends JavaPlugin {
-	
+
 	public Plugin instance;
-	
+
 	@Override
-    public void onEnable(){
+	public void onEnable() {
 
 		getCommand("emotes").setExecutor(new EmotesCmd(this));
 		getCommand("kiss").setExecutor(new KissCmd(this));
@@ -46,21 +46,24 @@ public class Main extends JavaPlugin {
 		getCommand("smack").setExecutor(new SmackCmd(this));
 		getCommand("facepalm").setExecutor(new FacepalmCmd(this));
 		getCommand("whistle").setExecutor(new WhistleCmd(this));
-		
+
 		FileConfiguration config = getConfig();
 
-        config.options().copyDefaults(true);
-        saveConfig();
-		
-		getLogger().info("Emotes v" + this.getDescription().getVersion() + " has been enabled!");			
+		config.options().copyDefaults(true);
+		this.getConfig().addDefault("cooldown.default", 10);
+		saveConfig();
 
-    }
- 
-    @Override
-    public void onDisable() {
-    	
-    	getLogger().info("Emotes has been disabled!");
-    	
-    }
+		getLogger().info(
+				"Emotes v" + this.getDescription().getVersion()
+						+ " has been enabled!");
+
+	}
+
+	@Override
+	public void onDisable() {
+
+		getLogger().info("Emotes has been disabled!");
+
+	}
 
 }
