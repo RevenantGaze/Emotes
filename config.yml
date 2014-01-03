@@ -1,10 +1,8 @@
 # Default config file for Emotes
 
-cooldown: 10
-# seconds
-
-default-cooldown:  10 
-# seconds
+cooldown: 
+  cooldown: 10
+  default: 10
 
 # married-only-kissing: true 
 # only players that are married can kiss eachother (NOT IN USE YET)
