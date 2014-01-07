@@ -1,6 +1,6 @@
 name: Emotes
 main: io.github.com.revenantgaze.emoteplugin.Main
-version: 1.5
+version: 1.6
 author: RevenantGaze
 website: http://dev.bukkit.org/bukkit-plugins/emotes/
 commands:
@@ -9,31 +9,6 @@ commands:
     usage: /emotes
     default: op
     permission: emotes.command.emotes.use
-  emotes list:
-    description: Lists all available emotes!
-    usage: /emotes list
-    default: op
-    permission: emotes.command.emotes.list
-  emotes cooldown:
-    description: Shows the help message for the emotes cooldown command!
-    usage: /emotes cooldown change <seconds>
-    default: op
-    permission: emotes.command.emotes.cooldown
-  emotes cooldown change:
-    description: Changes the duration of the emotes cooldown!
-    usage: /emotes cooldown change <seconds>
-    default: op
-    permission: emotes.command.emotes.cooldown.change
-  emotes cooldown show:
-    description: Show the cooldown value!
-    usage: /emotes cooldown show
-    default: op
-    permission: emotes.command.emotes.show
-  emotes cooldown default:
-    description: Changes the duration of the emotes cooldown to default!
-    usage: /emotes cooldown change <seconds>
-    default: op
-    permission: emotes.command.emotes.default
   kiss:
     description: Kiss another player!
     usage: /kiss <player>
@@ -118,6 +93,10 @@ commands:
     usage: /whistle <player>
     default: op
     permission: emotes.command.whistle
+  emote:
+    description: Do a custom emote!
+    usage: /emote <emote>
+    default: op
 
 permissions:
   emotes.*:
@@ -126,11 +105,13 @@ permissions:
       emotes.command.*: true
       emotes.command.argue: true
       emotes.command.emotes.*: true
+      emotes.command.emotes.list: true
       emotes.command.emotes.cooldown: true
       emotes.command.emotes.cooldown.*: true
       emotes.command.emotes.cooldown.change: true
       emotes.command.emotes.cooldown.default: true
       emotes.command.emotes.cooldown.show: true
+      emotes.command.emotes.setdistance: true
       emotes.command.emotes.version: true
       emotes.command.emotes.use: true
       emotes.command.facepalm: true
@@ -153,11 +134,13 @@ permissions:
     children:
       emotes.command.argue: true
       emotes.command.emotes.*: true
+      emotes.command.emotes.list: true
       emotes.command.emotes.cooldown: true
       emotes.command.emotes.cooldown.*: true
       emotes.command.emotes.cooldown.change: true
       emotes.command.emotes.cooldown.default: true
       emotes.command.emotes.cooldown.show: true
+      emotes.command.emotes.setdistance: true
       emotes.command.emotes.version: true
       emotes.command.emotes.use: true
       emotes.command.facepalm: true
@@ -181,13 +164,18 @@ permissions:
   emotes.command.emotes.*:
     description: Gives access to all /emotes commands
     children:
+      emotes.command.emotes.list: true
       emotes.command.emotes.cooldown: true
       emotes.command.emotes.cooldown.*: true
       emotes.command.emotes.cooldown.change: true
       emotes.command.emotes.cooldown.default: true
       emotes.command.emotes.cooldown.show: true
+      emotes.command.emotes.setdistance: true
       emotes.command.emotes.version: true
       emotes.command.emotes.use: true
+    default: op
+  emotes.command.emotes.list:
+    description: Gives access to /emotes list
     default: op
   emotes.command.emotes.cooldown:
     description: Gives access to /emotes cooldown
@@ -207,6 +195,9 @@ permissions:
     default: op
   emotes.command.emotes.cooldown.show:
     description: Gives access to /emotes cooldown show
+    default: op
+  emotes.command.emotes.setdistance:
+    description: Gives access to /emotes setdistance
     default: op
   emotes.command.emotes.version:
     description: Gives access to /emotes version
