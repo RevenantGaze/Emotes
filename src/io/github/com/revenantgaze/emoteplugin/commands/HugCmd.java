@@ -34,6 +34,11 @@ public class HugCmd implements CommandExecutor {
 
 				Long lastEmote = Cooldown.lastEmote.get(you.getName());
 
+				int emotesDistance = plugin.getConfig().getInt(
+						"emotes-distance");
+
+				int distanceSquared = emotesDistance * emotesDistance;
+
 				if (lastEmote == null
 						|| lastEmote + (CooldownValue * 1000) < System
 								.currentTimeMillis()) {
@@ -43,36 +48,46 @@ public class HugCmd implements CommandExecutor {
 
 						Player target = you.getServer().getPlayer(args[0]);
 
-						String user1 = you.getName();
-						String user2 = target.getName();
+						String senderName = you.getName();
+						String targetName = target.getName();
 
-						Bukkit.getServer().broadcastMessage(
-								ChatColor.GOLD + "[Emotes] " + ChatColor.GREEN
-										+ user1 + " hugs " + user2
-										+ "! How cute!");
+						for (Player p : Bukkit.getOnlinePlayers()) {
+
+							if (you.getLocation().distanceSquared(
+									p.getLocation()) < distanceSquared) {
+
+								p.sendMessage(ChatColor.GREEN + senderName
+										+ " hugs " + targetName + "! How cute!");
+
+							}
+
+						}
 
 					}
 
 					else if (args.length == 0) {
 
-						String user1 = you.getName();
+						String senderName = you.getName();
 
-						Bukkit.getServer()
-								.broadcastMessage(
-										ChatColor.GOLD
-												+ "[Emotes] "
-												+ ChatColor.GREEN
-												+ user1
-												+ " runs up to the nearest tree, and hugs it!");
+						for (Player p : Bukkit.getOnlinePlayers()) {
+
+							if (you.getLocation().distanceSquared(
+									p.getLocation()) < distanceSquared) {
+
+								p.sendMessage(ChatColor.GREEN
+										+ senderName
+										+ " runs up to the nearest tree and hugs it!");
+
+							}
+
+						}
 
 					}
 
 					else if (args.length > 1) {
 
-						you.sendMessage(ChatColor.GOLD + "[Emotes] "
-								+ ChatColor.RED + "Too many arguments!");
-						you.sendMessage(ChatColor.GOLD + "[Emotes] "
-								+ ChatColor.RED + "Usage: /hug <player>");
+						you.sendMessage(ChatColor.RED + "Too many arguments!");
+						you.sendMessage(ChatColor.RED + "Usage: /hug <player>");
 
 						return true;
 
@@ -80,8 +95,8 @@ public class HugCmd implements CommandExecutor {
 
 					else {
 
-						you.sendMessage(ChatColor.GOLD + "[Emotes] "
-								+ ChatColor.RED + "This player is not online!");
+						you.sendMessage(ChatColor.RED
+								+ "This player is not online!");
 
 						return true;
 
@@ -96,13 +111,11 @@ public class HugCmd implements CommandExecutor {
 
 				else {
 
-					you.sendMessage(ChatColor.GOLD
-							+ "[Emotes] "
-							+ ChatColor.RED
+					you.sendMessage(ChatColor.RED
 							+ "You have "
 							+ (CooldownValue - ((System.currentTimeMillis() - (Cooldown.lastEmote
 									.get(you.getName()))) / 1000))
-							+ " seconds left.");
+							+ " seconds left before you can use another emote.");
 
 					return true;
 
@@ -112,15 +125,15 @@ public class HugCmd implements CommandExecutor {
 
 			else {
 
-				sender.sendMessage(ChatColor.GOLD + "[Emotes] " + ChatColor.RED
+				sender.sendMessage(ChatColor.RED
 						+ "You can't use emotes from the console!");
 
 				return true;
 
 			}
-			
+
 		}
-		
+
 		return false;
 
 	}

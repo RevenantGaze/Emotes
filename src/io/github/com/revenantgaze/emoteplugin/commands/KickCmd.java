@@ -34,6 +34,11 @@ public class KickCmd implements CommandExecutor {
 
 				Long lastEmote = Cooldown.lastEmote.get(you.getName());
 
+				int emotesDistance = plugin.getConfig().getInt(
+						"emotes-distance");
+
+				int distanceSquared = emotesDistance * emotesDistance;
+
 				if (lastEmote == null
 						|| lastEmote + (CooldownValue * 1000) < System
 								.currentTimeMillis()) {
@@ -43,32 +48,46 @@ public class KickCmd implements CommandExecutor {
 
 						Player target = sender.getServer().getPlayer(args[0]);
 
-						String user1 = you.getName();
-						String user2 = target.getName();
+						String senderName = you.getName();
+						String targetName = target.getName();
 
-						Bukkit.getServer().broadcastMessage(
-								ChatColor.GOLD + "[Emotes] " + ChatColor.GREEN
-										+ user1 + " kicks " + user2
+						for (Player p : Bukkit.getOnlinePlayers()) {
+
+							if (you.getLocation().distanceSquared(
+									p.getLocation()) < distanceSquared) {
+
+								p.sendMessage(ChatColor.GREEN + senderName
+										+ " kicks " + targetName
 										+ " in their private parts! Ouch!");
+
+							}
+
+						}
 
 					}
 
 					else if (args.length == 0) {
 
-						String user1 = you.getName();
+						String senderName = you.getName();
 
-						Bukkit.getServer().broadcastMessage(
-								ChatColor.GOLD + "[Emotes] " + ChatColor.GREEN
-										+ user1 + " kicks the bucket!");
+						for (Player p : Bukkit.getOnlinePlayers()) {
+
+							if (you.getLocation().distanceSquared(
+									p.getLocation()) < distanceSquared) {
+
+								p.sendMessage(ChatColor.GREEN + senderName
+										+ " kicks the bucket!");
+
+							}
+
+						}
 
 					}
 
 					else if (args.length > 1) {
 
-						you.sendMessage(ChatColor.GOLD + "[Emotes] "
-								+ ChatColor.RED + "Too many arguments!");
-						you.sendMessage(ChatColor.GOLD + "[Emotes] "
-								+ ChatColor.RED + "Usage: /kiss <player>");
+						you.sendMessage(ChatColor.RED + "Too many arguments!");
+						you.sendMessage(ChatColor.RED + "Usage: /kiss <player>");
 
 						return true;
 
@@ -76,8 +95,8 @@ public class KickCmd implements CommandExecutor {
 
 					else {
 
-						you.sendMessage(ChatColor.GOLD + "[Emotes] "
-								+ ChatColor.RED + "This player is not online!");
+						you.sendMessage(ChatColor.RED
+								+ "This player is not online!");
 
 						return true;
 
@@ -92,13 +111,11 @@ public class KickCmd implements CommandExecutor {
 
 				else {
 
-					you.sendMessage(ChatColor.GOLD
-							+ "[Emotes] "
-							+ ChatColor.RED
+					you.sendMessage(ChatColor.RED
 							+ "You have "
 							+ (CooldownValue - ((System.currentTimeMillis() - (Cooldown.lastEmote
 									.get(you.getName()))) / 1000))
-							+ " seconds left.");
+							+ " seconds left before you can use another emote.");
 
 					return true;
 
@@ -108,7 +125,7 @@ public class KickCmd implements CommandExecutor {
 
 			else {
 
-				sender.sendMessage(ChatColor.GOLD + "[Emotes] " + ChatColor.RED
+				sender.sendMessage(ChatColor.RED
 						+ "You can't use emotes from the console!");
 
 				return true;
@@ -116,7 +133,7 @@ public class KickCmd implements CommandExecutor {
 			}
 
 		}
-		
+
 		return false;
 
 	}
