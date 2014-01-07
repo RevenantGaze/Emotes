@@ -17,11 +17,13 @@ import io.github.com.revenantgaze.emoteplugin.commands.TeabagCmd;
 import io.github.com.revenantgaze.emoteplugin.commands.WaveCmd;
 import io.github.com.revenantgaze.emoteplugin.commands.WhistleCmd;
 import io.github.com.revenantgaze.emoteplugin.commands.WinkCmd;
+import io.github.com.revenantgaze.emoteplugin.unimplemented.EmoteCmd;
 
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.configuration.file.FileConfiguration;
 
+@SuppressWarnings("unused")
 public class Main extends JavaPlugin {
 
 	public Plugin instance;
@@ -46,11 +48,17 @@ public class Main extends JavaPlugin {
 		getCommand("smack").setExecutor(new SmackCmd(this));
 		getCommand("facepalm").setExecutor(new FacepalmCmd(this));
 		getCommand("whistle").setExecutor(new WhistleCmd(this));
+		//getCommand("emote").setExecutor(new EmoteCmd(this));
 
 		FileConfiguration config = getConfig();
+		
+		if (!getDataFolder().isDirectory()) getDataFolder().mkdirs(); getConfig().options().copyDefaults(true); saveConfig();
 
 		config.options().copyDefaults(true);
+		
 		this.getConfig().addDefault("cooldown.default", 10);
+		this.getConfig().addDefault("emotes-distance", 40);
+		
 		saveConfig();
 
 		getLogger().info(
