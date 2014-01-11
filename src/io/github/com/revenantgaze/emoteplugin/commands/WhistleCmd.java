@@ -34,11 +34,6 @@ public class WhistleCmd implements CommandExecutor {
 
 				Long lastEmote = Cooldown.lastEmote.get(you.getName());
 
-				int emotesDistance = plugin.getConfig().getInt(
-						"emotes-distance");
-
-				int distanceSquared = emotesDistance * emotesDistance;
-
 				if (lastEmote == null
 						|| lastEmote + (CooldownValue * 1000) < System
 								.currentTimeMillis()) {
@@ -48,46 +43,33 @@ public class WhistleCmd implements CommandExecutor {
 
 						Player target = sender.getServer().getPlayer(args[0]);
 
-						String senderName = you.getName();
-						String targetName = target.getName();
+						String user1 = you.getName();
+						String user2 = target.getName();
 
-						for (Player p : Bukkit.getOnlinePlayers()) {
-
-							if (you.getLocation().distanceSquared(
-									p.getLocation()) < distanceSquared) {
-
-								p.sendMessage(ChatColor.GREEN + senderName
-										+ " whistles at " + targetName + "!");
-
-							}
-
-						}
+						Bukkit.getServer()
+								.broadcastMessage(
+										ChatColor.GOLD + "[Emotes] "
+												+ ChatColor.GREEN + user1
+												+ " whistles at " + user2 + "!");
 
 					}
 
 					else if (args.length == 0) {
 
-						String senderName = you.getName();
+						String user1 = you.getName();
 
-						for (Player p : Bukkit.getOnlinePlayers()) {
-
-							if (you.getLocation().distanceSquared(
-									p.getLocation()) < distanceSquared) {
-
-								p.sendMessage(ChatColor.GREEN + senderName
-										+ " whistles a tune!");
-
-							}
-
-						}
+						Bukkit.getServer().broadcastMessage(
+								ChatColor.GOLD + "[Emotes] " + ChatColor.GREEN
+										+ user1 + " whistles a tune!");
 
 					}
 
 					else if (args.length > 1) {
 
-						you.sendMessage(ChatColor.RED + "Too many arguments!");
-						you.sendMessage(ChatColor.RED
-								+ "Usage: /whistle <player>");
+						you.sendMessage(ChatColor.GOLD + "[Emotes] "
+								+ ChatColor.RED + "Too many arguments!");
+						you.sendMessage(ChatColor.GOLD + "[Emotes] "
+								+ ChatColor.RED + "Usage: /whistle <player>");
 
 						return true;
 
@@ -95,8 +77,8 @@ public class WhistleCmd implements CommandExecutor {
 
 					else {
 
-						you.sendMessage(ChatColor.RED
-								+ "This player is not online!");
+						you.sendMessage(ChatColor.GOLD + "[Emotes] "
+								+ ChatColor.RED + "This player is not online!");
 
 						return true;
 
@@ -111,11 +93,13 @@ public class WhistleCmd implements CommandExecutor {
 
 				else {
 
-					you.sendMessage(ChatColor.RED
+					you.sendMessage(ChatColor.GOLD
+							+ "[Emotes] "
+							+ ChatColor.RED
 							+ "You have "
 							+ (CooldownValue - ((System.currentTimeMillis() - (Cooldown.lastEmote
 									.get(you.getName()))) / 1000))
-							+ " seconds left before you can use another emote.");
+							+ " seconds left.");
 
 					return true;
 
@@ -125,7 +109,7 @@ public class WhistleCmd implements CommandExecutor {
 
 			else {
 
-				sender.sendMessage(ChatColor.RED
+				sender.sendMessage(ChatColor.GOLD + "[Emotes] " + ChatColor.RED
 						+ "You can't use emotes from the console!");
 
 				return true;
