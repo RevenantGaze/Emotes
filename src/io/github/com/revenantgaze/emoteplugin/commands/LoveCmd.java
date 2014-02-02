@@ -1,10 +1,11 @@
 package io.github.com.revenantgaze.emoteplugin.commands;
 
+import io.github.com.revenantgaze.emoteplugin.Cooldown;
 import io.github.com.revenantgaze.emoteplugin.Main;
-import io.github.com.revenantgaze.emoteplugin.cooldowns.Cooldown;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -34,6 +35,11 @@ public class LoveCmd implements CommandExecutor {
 
 				Long lastEmote = Cooldown.lastEmote.get(you.getName());
 
+				int emotesDistance = plugin.getConfig().getInt(
+						"emotes-distance");
+
+				int distanceSquared = emotesDistance * emotesDistance;
+
 				if (lastEmote == null
 						|| lastEmote + (CooldownValue * 1000) < System
 								.currentTimeMillis()) {
@@ -43,36 +49,63 @@ public class LoveCmd implements CommandExecutor {
 
 						Player target = sender.getServer().getPlayer(args[0]);
 
-						String user1 = you.getName();
-						String user2 = target.getName();
+						String senderName = you.getName();
+						String targetName = target.getName();
 
-						Bukkit.getServer().broadcastMessage(
-								ChatColor.GOLD + "[Emotes] " + ChatColor.GREEN
-										+ user1 + " loves " + user2
-										+ "! What a sweet couple!");
+						World senderWorld = you.getWorld();
+
+						for (Player p : Bukkit.getOnlinePlayers()) {
+
+							World targetWorld = p.getWorld();
+
+							if (senderWorld == targetWorld) {
+
+								if (you.getLocation().distanceSquared(
+										p.getLocation()) < distanceSquared) {
+
+									p.sendMessage(ChatColor.GREEN + senderName
+											+ " loves " + targetName
+											+ "! What a sweet couple!");
+
+								}
+
+							}
+
+						}
 
 					}
 
 					else if (args.length == 0) {
 
-						String user1 = you.getName();
+						String senderName = you.getName();
 
-						Bukkit.getServer()
-								.broadcastMessage(
-										ChatColor.GOLD
-												+ "[Emotes] "
-												+ ChatColor.GREEN
-												+ user1
-												+ " sends their love to all neglected creepers!");
+						World senderWorld = you.getWorld();
+
+						for (Player p : Bukkit.getOnlinePlayers()) {
+
+							World targetWorld = p.getWorld();
+
+							if (senderWorld == targetWorld) {
+
+								if (you.getLocation().distanceSquared(
+										p.getLocation()) < distanceSquared) {
+
+									p.sendMessage(ChatColor.GREEN
+											+ senderName
+											+ " directs their love towards all neglected creepers!");
+
+								}
+
+							}
+
+						}
 
 					}
 
 					else if (args.length > 1) {
 
-						you.sendMessage(ChatColor.GOLD + "[Emotes] "
-								+ ChatColor.RED + "Too many arguments!");
-						you.sendMessage(ChatColor.GOLD + "[Emotes] "
-								+ ChatColor.RED + "Usage: /love <player>");
+						you.sendMessage(ChatColor.RED + "Too many arguments!");
+						you.sendMessage(ChatColor.RED + "Usage: /love <player>");
 
 						return true;
 
@@ -80,8 +113,8 @@ public class LoveCmd implements CommandExecutor {
 
 					else {
 
-						you.sendMessage(ChatColor.GOLD + "[Emotes] "
-								+ ChatColor.RED + "This player is not online!");
+						you.sendMessage(ChatColor.RED
+								+ "This player is not online!");
 
 						return true;
 
@@ -96,13 +129,11 @@ public class LoveCmd implements CommandExecutor {
 
 				else {
 
-					you.sendMessage(ChatColor.GOLD
-							+ "[Emotes] "
-							+ ChatColor.RED
+					you.sendMessage(ChatColor.RED
 							+ "You have "
 							+ (CooldownValue - ((System.currentTimeMillis() - (Cooldown.lastEmote
 									.get(you.getName()))) / 1000))
-							+ " seconds left.");
+							+ " seconds left before you can use another emote.");
 
 					return true;
 
@@ -112,7 +143,7 @@ public class LoveCmd implements CommandExecutor {
 
 			else {
 
-				sender.sendMessage(ChatColor.GOLD + "[Emotes] " + ChatColor.RED
+				sender.sendMessage(ChatColor.RED
 						+ "You can't use emotes from the console!");
 
 				return true;

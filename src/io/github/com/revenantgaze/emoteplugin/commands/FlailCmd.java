@@ -1,10 +1,11 @@
 package io.github.com.revenantgaze.emoteplugin.commands;
 
+import io.github.com.revenantgaze.emoteplugin.Cooldown;
 import io.github.com.revenantgaze.emoteplugin.Main;
-import io.github.com.revenantgaze.emoteplugin.cooldowns.Cooldown;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -34,26 +35,44 @@ public class FlailCmd implements CommandExecutor {
 
 				Long lastEmote = Cooldown.lastEmote.get(you.getName());
 
+				int emotesDistance = plugin.getConfig().getInt(
+						"emotes-distance");
+
+				int distanceSquared = emotesDistance * emotesDistance;
+
 				if (lastEmote == null
 						|| lastEmote + (CooldownValue * 1000) < System
 								.currentTimeMillis()) {
 
 					if ((args.length == 0)) {
 
-						String user1 = you.getName();
+						String senderName = you.getName();
 
-						Bukkit.getServer().broadcastMessage(
-								ChatColor.GOLD + "[Emotes] " + ChatColor.GREEN
-										+ user1 + " flails!");
+						World senderWorld = you.getWorld();
 
-						return true;
-						
+						for (Player p : Bukkit.getOnlinePlayers()) {
+
+							World targetWorld = p.getWorld();
+
+							if (senderWorld == targetWorld) {
+
+								if (you.getLocation().distanceSquared(
+										p.getLocation()) < distanceSquared) {
+
+									p.sendMessage(ChatColor.GREEN + senderName
+											+ " flails!");
+
+								}
+
+							}
+
+						}
+
 					}
 
 					else if (args.length < 0) {
 
-						you.sendMessage(ChatColor.GOLD + "[Emotes] "
-								+ ChatColor.RED + "Usage: /<emote>");
+						you.sendMessage(ChatColor.RED + "Usage: /<emote>");
 
 						return true;
 
@@ -63,13 +82,11 @@ public class FlailCmd implements CommandExecutor {
 
 				else {
 
-					you.sendMessage(ChatColor.GOLD
-							+ "[Emotes] "
-							+ ChatColor.RED
+					you.sendMessage(ChatColor.RED
 							+ "You have "
 							+ (CooldownValue - ((System.currentTimeMillis() - (Cooldown.lastEmote
 									.get(you.getName()))) / 1000))
-							+ " seconds left.");
+							+ " seconds left before you can use another emote.");
 
 					return true;
 
@@ -79,7 +96,7 @@ public class FlailCmd implements CommandExecutor {
 
 			else {
 
-				sender.sendMessage(ChatColor.GOLD + "[Emotes] " + ChatColor.RED
+				sender.sendMessage(ChatColor.RED
 						+ "You can't use emotes from the console!");
 
 				return true;

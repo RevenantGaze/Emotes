@@ -1,11 +1,16 @@
 package io.github.com.revenantgaze.emoteplugin.commands;
 
+import java.io.File;
+import java.io.IOException;
+
 import io.github.com.revenantgaze.emoteplugin.Main;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 public class EmotesCmd implements CommandExecutor {
@@ -27,74 +32,147 @@ public class EmotesCmd implements CommandExecutor {
 		int Cooldown = plugin.getConfig().getInt("cooldown.cooldown");
 		int DefaultCooldown = plugin.getConfig().getInt("cooldown.default");
 
+		boolean checkDefaultUse = plugin.getConfig().getBoolean(
+				"use-default-emotes");
+
 		if ((cmd.getName().equalsIgnoreCase("emotes") && you
 				.hasPermission("emotes.command.emotes.use"))) {
 
 			if (args.length == 0) {
 
-				you.sendMessage(ChatColor.GOLD + "[Emotes] " + ChatColor.AQUA
-						+ "Available commands:");
-				you.sendMessage(ChatColor.GOLD + "[Emotes] " + ChatColor.BLUE
-						+ "/emotes");
-				you.sendMessage(ChatColor.GOLD + "[Emotes] " + ChatColor.BLUE
-						+ "/emotes list " + ChatColor.GREEN
-						+ "[1|2]");
-				you.sendMessage(ChatColor.GOLD + "[Emotes] " + ChatColor.BLUE
-						+ "/emotes cooldown " + ChatColor.GREEN
-						+ "[CHANGE|SHOW|RESET]");
-				you.sendMessage(ChatColor.GOLD + "[Emotes] " + ChatColor.BLUE
-						+ "/emotes cooldown change " + ChatColor.GREEN
-						+ "[SECONDS]");
-				you.sendMessage(ChatColor.GOLD + "[Emotes] " + ChatColor.BLUE
-						+ "/emotes version");
+				you.sendMessage(ChatColor.AQUA + "Available commands for "
+						+ ChatColor.GOLD + "Emotes: ");
+				you.sendMessage(ChatColor.BLUE + "/emotes");
+				you.sendMessage(ChatColor.BLUE + "/emotes list "
+						+ ChatColor.GREEN + "[1|2]");
+				you.sendMessage(ChatColor.BLUE + "/emotes cooldown "
+						+ ChatColor.GREEN + "[CHANGE|SHOW|RESET]");
+				you.sendMessage(ChatColor.BLUE + "/emotes cooldown change "
+						+ ChatColor.GREEN + "[SECONDS]");
+				you.sendMessage(ChatColor.BLUE + "/emotes setdistance "
+						+ ChatColor.GREEN + "[DISTANCE]");
+				you.sendMessage(ChatColor.BLUE + "/emotes reloadconfig");
+				you.sendMessage(ChatColor.BLUE + "/emotes version");
 
 				return true;
+
 			}
 
 			else if (args.length == 1) {
 
-				if (args[0].equalsIgnoreCase("list")) {
+				if (args[0].equalsIgnoreCase("list")
+						&& you.hasPermission("emotes.command.emotes.list")) {
 
-					you.sendMessage(ChatColor.GOLD + "[Emotes] "
-							+ ChatColor.AQUA + "Available emotes:");
-					you.sendMessage(ChatColor.GOLD + "[Emotes] "
-							+ ChatColor.BLUE + "/kiss " + ChatColor.GREEN
-							+ "<player>");
-					you.sendMessage(ChatColor.GOLD + "[Emotes] "
-							+ ChatColor.BLUE + "/hug " + ChatColor.GREEN
-							+ "<player>");
-					you.sendMessage(ChatColor.GOLD + "[Emotes] "
-							+ ChatColor.BLUE + "/wave " + ChatColor.GREEN
-							+ "<player>");
-					you.sendMessage(ChatColor.GOLD + "[Emotes] "
-							+ ChatColor.BLUE + "/glomp " + ChatColor.GREEN
-							+ "<player>");
-					you.sendMessage(ChatColor.GOLD + "[Emotes] "
-							+ ChatColor.BLUE + "/wink " + ChatColor.GREEN
-							+ "<player>");
-					you.sendMessage(ChatColor.GOLD + "[Emotes] "
-							+ ChatColor.BLUE + "/ekick " + ChatColor.GREEN
-							+ "<player>");
-					you.sendMessage(ChatColor.GOLD + "[Emotes] "
-							+ ChatColor.BLUE + "/teabag " + ChatColor.GREEN
-							+ "<player>");
-					you.sendMessage(ChatColor.GOLD + "[Emotes] "
-							+ ChatColor.BLUE + "/argue " + ChatColor.GREEN
-							+ "<player>");
-					you.sendMessage(ChatColor.GOLD + "[Emotes] "
-							+ ChatColor.BLUE + "Page " + ChatColor.RED
-							+ "1" + ChatColor.BLUE + " of " + ChatColor.RED
-							+ "2");
+					if (checkDefaultUse == true) {
+
+						you.sendMessage(ChatColor.AQUA + "Available emotes:");
+						you.sendMessage(ChatColor.BLUE + "/kiss "
+								+ ChatColor.GREEN + "<player>");
+						you.sendMessage(ChatColor.BLUE + "/hug "
+								+ ChatColor.GREEN + "<player>");
+						you.sendMessage(ChatColor.BLUE + "/wave "
+								+ ChatColor.GREEN + "<player>");
+						you.sendMessage(ChatColor.BLUE + "/glomp "
+								+ ChatColor.GREEN + "<player>");
+						you.sendMessage(ChatColor.BLUE + "/wink "
+								+ ChatColor.GREEN + "<player>");
+						you.sendMessage(ChatColor.BLUE + "/ekick "
+								+ ChatColor.GREEN + "<player>");
+						you.sendMessage(ChatColor.BLUE + "/teabag "
+								+ ChatColor.GREEN + "<player>");
+						you.sendMessage(ChatColor.BLUE + "/argue "
+								+ ChatColor.GREEN + "<player>");
+						you.sendMessage(ChatColor.BLUE + "Page "
+								+ ChatColor.RED + "1" + ChatColor.BLUE + " of "
+								+ ChatColor.RED + "2");
+
+						return true;
+
+					}
+
+					else {
+
+						you.sendMessage(ChatColor.RED
+								+ "Default emotes has been disabled!");
+
+						return true;
+
+					}
+
+				}
+
+				else if (args[0].equalsIgnoreCase("cooldown")
+						&& you.hasPermission("emotes.command.emotes.cooldown")) {
+
+					you.sendMessage(ChatColor.BLUE
+							+ "Usage: /emotes cooldown <change|show|reset>");
 
 					return true;
 
 				}
 
-				else if (args[0].equalsIgnoreCase("cooldown")) {
+				else if (args[0].equalsIgnoreCase("setdistance")) {
 
-					you.sendMessage(ChatColor.GOLD + "[Emotes] "
-							+ ChatColor.BLUE
-							+ "Usage: /emotes cooldown <change|show|reset>");
+					you.sendMessage(ChatColor.BLUE
+							+ "Usage: /emotes setdistance [distance]");
+
+					return true;
+
+				}
+
+				else if (args[0].equalsIgnoreCase("reloadconfig")) {
+
+					File emoteConfigFile;
+					FileConfiguration emoteConfig;
+
+					emoteConfigFile = new File(plugin.getDataFolder(),
+							"emotes.yml");
+
+					emoteConfig = YamlConfiguration
+							.loadConfiguration(emoteConfigFile);
+
+					if (checkDefaultUse == true) {
+
+						String[] defaultList = { "argue", "facepalm", "flail",
+								"glomp", "grumble", "hate", "hug", "kick",
+								"kiss", "love", "poke", "smack", "teabag",
+								"wave", "whistle", "wink" };
+
+						emoteConfig.set("emotes-list", defaultList);
+
+						try {
+
+							emoteConfig.save(emoteConfigFile);
+
+						}
+
+						catch (IOException e) {
+
+							e.printStackTrace();
+
+						}
+
+					}
+
+					if (checkDefaultUse == false) {
+
+						String[] defaultList = {};
+
+						emoteConfig.set("emotes-list", defaultList);
+
+						try {
+
+							emoteConfig.save(emoteConfigFile);
+
+						}
+
+						catch (IOException e) {
+
+							e.printStackTrace();
+
+						}
+
+					}
 
 					return true;
 
@@ -103,8 +181,7 @@ public class EmotesCmd implements CommandExecutor {
 				else if (args[0].equalsIgnoreCase("version")
 						&& you.hasPermission("emotes.command.emotes.version")) {
 
-					you.sendMessage(ChatColor.GOLD + "[Emotes] "
-							+ ChatColor.BLUE + "Emotes version "
+					you.sendMessage(ChatColor.BLUE + "Emotes version "
 							+ ChatColor.RED
 							+ plugin.getDescription().getVersion());
 
@@ -118,73 +195,70 @@ public class EmotesCmd implements CommandExecutor {
 
 			else if (args.length == 2) {
 
-				if (args[0].equalsIgnoreCase("list")) {
+				if (args[0].equalsIgnoreCase("list")
+						&& you.hasPermission("emotes.command.emotes.list")) {
 
-					if (args[1].equalsIgnoreCase("1")) {
+					if (checkDefaultUse == true) {
 
-						you.sendMessage(ChatColor.GOLD + "[Emotes] "
-								+ ChatColor.AQUA + "Available emotes:");
-						you.sendMessage(ChatColor.GOLD + "[Emotes] "
-								+ ChatColor.BLUE + "/kiss " + ChatColor.GREEN
-								+ "<player>");
-						you.sendMessage(ChatColor.GOLD + "[Emotes] "
-								+ ChatColor.BLUE + "/hug " + ChatColor.GREEN
-								+ "<player>");
-						you.sendMessage(ChatColor.GOLD + "[Emotes] "
-								+ ChatColor.BLUE + "/wave " + ChatColor.GREEN
-								+ "<player>");
-						you.sendMessage(ChatColor.GOLD + "[Emotes] "
-								+ ChatColor.BLUE + "/glomp " + ChatColor.GREEN
-								+ "<player>");
-						you.sendMessage(ChatColor.GOLD + "[Emotes] "
-								+ ChatColor.BLUE + "/wink " + ChatColor.GREEN
-								+ "<player>");
-						you.sendMessage(ChatColor.GOLD + "[Emotes] "
-								+ ChatColor.BLUE + "/ekick " + ChatColor.GREEN
-								+ "<player>");
-						you.sendMessage(ChatColor.GOLD + "[Emotes] "
-								+ ChatColor.BLUE + "/teabag " + ChatColor.GREEN
-								+ "<player>");
-						you.sendMessage(ChatColor.GOLD + "[Emotes] "
-								+ ChatColor.BLUE + "/argue " + ChatColor.GREEN
-								+ "<player>");
-						you.sendMessage(ChatColor.GOLD + "[Emotes] "
-								+ ChatColor.BLUE + "Page " + ChatColor.RED
-								+ "1" + ChatColor.BLUE + " of " + ChatColor.RED
-								+ "2");
+						if (args[1].equalsIgnoreCase("1")) {
+
+							you.sendMessage(ChatColor.AQUA
+									+ "Available emotes:");
+							you.sendMessage(ChatColor.BLUE + "/kiss "
+									+ ChatColor.GREEN + "<player>");
+							you.sendMessage(ChatColor.BLUE + "/hug "
+									+ ChatColor.GREEN + "<player>");
+							you.sendMessage(ChatColor.BLUE + "/wave "
+									+ ChatColor.GREEN + "<player>");
+							you.sendMessage(ChatColor.BLUE + "/glomp "
+									+ ChatColor.GREEN + "<player>");
+							you.sendMessage(ChatColor.BLUE + "/wink "
+									+ ChatColor.GREEN + "<player>");
+							you.sendMessage(ChatColor.BLUE + "/ekick "
+									+ ChatColor.GREEN + "<player>");
+							you.sendMessage(ChatColor.BLUE + "/teabag "
+									+ ChatColor.GREEN + "<player>");
+							you.sendMessage(ChatColor.BLUE + "/argue "
+									+ ChatColor.GREEN + "<player>");
+							you.sendMessage(ChatColor.BLUE + "Page "
+									+ ChatColor.RED + "1" + ChatColor.BLUE
+									+ " of " + ChatColor.RED + "2");
+
+						}
+
+						else if (args[1].equalsIgnoreCase("2")
+								&& you.hasPermission("emotes.command.emotes.list")) {
+
+							you.sendMessage(ChatColor.AQUA
+									+ "Available emotes:");
+							you.sendMessage(ChatColor.BLUE + "/flail");
+							you.sendMessage(ChatColor.BLUE + "/grumble "
+									+ ChatColor.GREEN + "<player>");
+							you.sendMessage(ChatColor.BLUE + "/facepalm");
+							you.sendMessage(ChatColor.BLUE + "/hate "
+									+ ChatColor.GREEN + "<player>");
+							you.sendMessage(ChatColor.BLUE + "/love "
+									+ ChatColor.GREEN + "<player>");
+							you.sendMessage(ChatColor.BLUE + "/poke "
+									+ ChatColor.GREEN + "<player>");
+							you.sendMessage(ChatColor.BLUE + "/smack "
+									+ ChatColor.GREEN + "<player>");
+							you.sendMessage(ChatColor.BLUE + "/whistle "
+									+ ChatColor.GREEN + "<player>");
+							you.sendMessage(ChatColor.BLUE + "Page "
+									+ ChatColor.RED + "2" + ChatColor.BLUE
+									+ " of " + ChatColor.RED + "2");
+
+							return true;
+
+						}
 
 					}
 
-					else if (args[1].equalsIgnoreCase("2")) {
+					else {
 
-						you.sendMessage(ChatColor.GOLD + "[Emotes] "
-								+ ChatColor.AQUA + "Available emotes:");
-						you.sendMessage(ChatColor.GOLD + "[Emotes] "
-								+ ChatColor.BLUE + "/flail");
-						you.sendMessage(ChatColor.GOLD + "[Emotes] "
-								+ ChatColor.BLUE + "/grumble "
-								+ ChatColor.GREEN + "<player>");
-						you.sendMessage(ChatColor.GOLD + "[Emotes] "
-								+ ChatColor.BLUE + "/facepalm");
-						you.sendMessage(ChatColor.GOLD + "[Emotes] "
-								+ ChatColor.BLUE + "/hate " + ChatColor.GREEN
-								+ "<player>");
-						you.sendMessage(ChatColor.GOLD + "[Emotes] "
-								+ ChatColor.BLUE + "/love " + ChatColor.GREEN
-								+ "<player>");
-						you.sendMessage(ChatColor.GOLD + "[Emotes] "
-								+ ChatColor.BLUE + "/poke " + ChatColor.GREEN
-								+ "<player>");
-						you.sendMessage(ChatColor.GOLD + "[Emotes] "
-								+ ChatColor.BLUE + "/smack " + ChatColor.GREEN
-								+ "<player>");
-						you.sendMessage(ChatColor.GOLD + "[Emotes] "
-								+ ChatColor.BLUE + "/whistle "
-								+ ChatColor.GREEN + "<player>");
-						you.sendMessage(ChatColor.GOLD + "[Emotes] "
-								+ ChatColor.BLUE + "Page " + ChatColor.RED
-								+ "2" + ChatColor.BLUE + " of " + ChatColor.RED
-								+ "2");
+						you.sendMessage(ChatColor.RED
+								+ "Default emotes has been disabled!");
 
 						return true;
 
@@ -197,9 +271,8 @@ public class EmotesCmd implements CommandExecutor {
 					if (args[1].equalsIgnoreCase("change")
 							&& you.hasPermission("emotes.command.emotes.cooldown.change")) {
 
-						you.sendMessage(ChatColor.GOLD + "[Emotes] "
-								+ ChatColor.BLUE
-								+ "Usage: /emotes cooldown change <seconds>");
+						you.sendMessage(ChatColor.BLUE
+								+ "Usage: /emotes cooldown change [seconds]");
 
 						return true;
 
@@ -208,10 +281,10 @@ public class EmotesCmd implements CommandExecutor {
 					else if (args[1].equalsIgnoreCase("show")
 							&& you.hasPermission("emotes.command.emotes.cooldown.show")) {
 
-						you.sendMessage(ChatColor.GOLD + "[Emotes] "
-								+ ChatColor.BLUE
+						you.sendMessage(ChatColor.BLUE
 								+ "The cooldown for emote usage is" + " "
-								+ Cooldown + " seconds!");
+								+ ChatColor.RED + Cooldown + ChatColor.BLUE
+								+ " seconds!");
 
 						return true;
 
@@ -224,14 +297,28 @@ public class EmotesCmd implements CommandExecutor {
 								DefaultCooldown);
 						plugin.saveConfig();
 
-						you.sendMessage(ChatColor.GOLD
-								+ "[Emotes] "
-								+ ChatColor.BLUE
+						you.sendMessage(ChatColor.BLUE
 								+ "The cooldown for emote usage is now reset to default!");
 
 						return true;
 
 					}
+
+					return true;
+
+				}
+
+				else if (args[0].equalsIgnoreCase("setdistance")
+						&& you.hasPermission("emotes.command.emotes.setdistance")) {
+
+					int emotesDistance = Integer.parseInt(args[1]);
+
+					plugin.getConfig().set("emotes-distance", emotesDistance);
+
+					you.sendMessage(ChatColor.BLUE
+							+ "The travel distance for emotes is now set to "
+							+ ChatColor.RED + emotesDistance + ChatColor.BLUE
+							+ " blocks!");
 
 					return true;
 
@@ -254,10 +341,10 @@ public class EmotesCmd implements CommandExecutor {
 								.set("cooldown.cooldown", NewCooldown);
 						plugin.saveConfig();
 
-						you.sendMessage(ChatColor.GOLD + "[Emotes] "
-								+ ChatColor.BLUE
+						you.sendMessage(ChatColor.BLUE
 								+ "The cooldown for emote usage is now" + " "
-								+ NewCooldown + " seconds!");
+								+ ChatColor.RED + NewCooldown + ChatColor.BLUE
+								+ " seconds!");
 
 						return true;
 
@@ -273,10 +360,9 @@ public class EmotesCmd implements CommandExecutor {
 
 			else if (args.length > 3) {
 
-				you.sendMessage(ChatColor.GOLD + "[Emotes] " + ChatColor.BLUE
-						+ "Too many arguments!");
-				you.sendMessage(ChatColor.GOLD + "[Emotes] " + ChatColor.BLUE
-						+ "Usage: /emotes <list|cooldown>");
+				you.sendMessage(ChatColor.BLUE + "Too many arguments!");
+				you.sendMessage(ChatColor.BLUE
+						+ "Usage: /emotes <list|cooldown|setdistance>");
 
 				return true;
 
@@ -286,8 +372,7 @@ public class EmotesCmd implements CommandExecutor {
 
 		else {
 
-			you.sendMessage(ChatColor.GOLD + "[Emotes] " + ChatColor.RED
-					+ "You don't have permission");
+			you.sendMessage(ChatColor.RED + "You don't have permission");
 
 			return true;
 
@@ -296,5 +381,4 @@ public class EmotesCmd implements CommandExecutor {
 		return true;
 
 	}
-
 }
