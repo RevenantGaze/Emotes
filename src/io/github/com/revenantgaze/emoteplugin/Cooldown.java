@@ -1,4 +1,4 @@
-package io.github.com.revenantgaze.emoteplugin.cooldowns;
+package io.github.com.revenantgaze.emoteplugin;
 
 import java.util.HashMap;
 
