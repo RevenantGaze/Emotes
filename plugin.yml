@@ -1,6 +1,6 @@
 name: Emotes
 main: io.github.com.revenantgaze.emoteplugin.Main
-version: 1.6
+version: 1.6.2
 author: RevenantGaze
 website: http://dev.bukkit.org/bukkit-plugins/emotes/
 commands:
@@ -11,32 +11,32 @@ commands:
     permission: emotes.command.emotes.use
   kiss:
     description: Kiss another player!
-    usage: /kiss <player>
+    usage: 
     default: op
     permission: emotes.command.kiss
   hug:
     description: Hug another player!
-    usage: /hug <player>
+    usage: 
     default: op
     permission: emotes.command.hug
   wave:
     description: Wave at another player!
-    usage: /wave <player>
+    usage: 
     default: op
     permission: emotes.command.wave
   glomp:
     description: Glomp a player!
-    usage: /glomp <player>
+    usage: 
     default: op
     permission: emotes.command.glomp
   wink:
     description: Wink to a player!
-    usage: /wink <player>
+    usage: 
     default: op
     permission: emotes.command.wink
   ekick:
     description: Kick a player in their private parts!
-    usage: /ekick <player>
+    usage: 
     default: op
     permission: emotes.command.kick
     aliases: 
@@ -45,57 +45,57 @@ commands:
       - emotekick
   teabag:
     description: Teabag a player!
-    usage: /teabag <player>
+    usage: 
     default: op
     permission: emotes.command.teabag
   flail:
     description: Flail!
-    usage: /flail
+    usage: 
     default: op
     permission: emotes.command.flail
   grumble:
     description: Grumble!
-    usage: /grumble
+    usage: 
     default: op
     permission: emotes.command.grumble
   argue:
     description: Argue with a player!
-    usage: /argue <player>
+    usage: 
     default: op
     permission: emotes.command.argue
   love:
     description: Show your love to a player!
-    usage: /love <player>
+    usage: 
     default: op
     permission: emotes.command.love
   hate:
     description: Express your hate towards a player!
-    usage: /hate <player>
+    usage: 
     default: op
     permission: emotes.command.hate
   poke:
     description: Poke a player!
-    usage: /poke <player>
+    usage: 
     default: op
     permission: emotes.command.poke
   smack:
     description: Smack a player!
-    usage: /smack <player>
+    usage: 
     default: op
     permission: emotes.command.smack
   facepalm:
     description: Facepalm!
-    usage: /facepalm
+    usage: 
     default: op
     permission: emotes.command.facepalm
   whistle:
     description: Whistle!
-    usage: /whistle <player>
+    usage: 
     default: op
     permission: emotes.command.whistle
   emote:
     description: Do a custom emote!
-    usage: /emote <emote>
+    usage: /emote
     default: op
 
 permissions:
