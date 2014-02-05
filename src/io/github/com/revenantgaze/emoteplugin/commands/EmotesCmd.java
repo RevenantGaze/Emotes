@@ -1,16 +1,12 @@
 package io.github.com.revenantgaze.emoteplugin.commands;
 
-import java.io.File;
-import java.io.IOException;
-
 import io.github.com.revenantgaze.emoteplugin.Main;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 public class EmotesCmd implements CommandExecutor {
@@ -122,57 +118,8 @@ public class EmotesCmd implements CommandExecutor {
 
 				else if (args[0].equalsIgnoreCase("reloadconfig")) {
 
-					File emoteConfigFile;
-					FileConfiguration emoteConfig;
-
-					emoteConfigFile = new File(plugin.getDataFolder(),
-							"emotes.yml");
-
-					emoteConfig = YamlConfiguration
-							.loadConfiguration(emoteConfigFile);
-
-					if (checkDefaultUse == true) {
-
-						String[] defaultList = { "argue", "facepalm", "flail",
-								"glomp", "grumble", "hate", "hug", "kick",
-								"kiss", "love", "poke", "smack", "teabag",
-								"wave", "whistle", "wink" };
-
-						emoteConfig.set("emotes-list", defaultList);
-
-						try {
-
-							emoteConfig.save(emoteConfigFile);
-
-						}
-
-						catch (IOException e) {
-
-							e.printStackTrace();
-
-						}
-
-					}
-
-					if (checkDefaultUse == false) {
-
-						String[] defaultList = {};
-
-						emoteConfig.set("emotes-list", defaultList);
-
-						try {
-
-							emoteConfig.save(emoteConfigFile);
-
-						}
-
-						catch (IOException e) {
-
-							e.printStackTrace();
-
-						}
-
-					}
+					plugin.reloadEmoteConfig();
+					plugin.reloadConfig();
 
 					return true;
 
@@ -180,10 +127,14 @@ public class EmotesCmd implements CommandExecutor {
 
 				else if (args[0].equalsIgnoreCase("version")
 						&& you.hasPermission("emotes.command.emotes.version")) {
+					
+					String serverVersion = Bukkit.getBukkitVersion();
 
 					you.sendMessage(ChatColor.BLUE + "Emotes version "
 							+ ChatColor.RED
-							+ plugin.getDescription().getVersion());
+							+ plugin.getDescription().getVersion()
+							+ ChatColor.BLUE + " for Bukkit version "
+							+ ChatColor.RED + serverVersion + ChatColor.BLUE + "!");
 
 					return true;
 
