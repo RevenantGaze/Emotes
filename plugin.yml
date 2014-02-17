@@ -1,6 +1,6 @@
 name: Emotes
 main: io.github.com.revenantgaze.emoteplugin.Main
-version: 1.7b-1
+version: 2.0
 author: RevenantGaze
 website: http://dev.bukkit.org/bukkit-plugins/emotes/
 commands:
@@ -129,6 +129,17 @@ permissions:
       emotes.command.wave: true
       emotes.command.whistle: true
       emotes.command.wink: true
+      emotes.emote.*: true
+      emotes.emote.edit.*: true
+      emotes.emote.edit.message: true
+      emotes.emote.edit.spmessage: true
+      emotes.emote.edit.description: true
+      emotes.emote.edit.permission: true
+      emotes.emote.new: true
+      emotes.emote.delete: true
+      emotes.emote.list: true
+      emotes.emote.help: true
+      emotes.emote.use.*: true     
   emotes.command.*:
     description: Gives access to all commands that needs the emotes.command permission
     children:
@@ -249,4 +260,53 @@ permissions:
     default: op
   emotes.command.wink:
     description: Gives access to /wink
+    default: op
+  emotes.emote.*: 
+    description: Gives access to all /emote commands
+    children:
+      emotes.emote.edit.*: true
+      emotes.emote.edit.message: true
+      emotes.emote.edit.spmessage: true
+      emotes.emote.edit.description: true
+      emotes.emote.edit.permission: true
+      emotes.emote.new: true
+      emotes.emote.delete: true
+      emotes.emote.list: true
+      emotes.emote.help: true
+      emotes.emote.use.*: true
+    default: op
+  emotes.emote.edit.*:
+    description: Gives access to all /emote edit commands
+    children:
+      emotes.emote.edit.message: true
+      emotes.emote.edit.spmessage: true
+      emotes.emote.edit.description: true
+      emotes.emote.edit.permission: true
+    default: op
+  emotes.emote.edit.message:
+    description: Gives access to /emote edit message
+    default: op
+  emotes.emote.edit.spmessage:
+    description: Gives access to /emote edit spmessage
+    default: op
+  emotes.emote.edit.description:
+    description: Gives access to /emote edit description
+    default: op
+  emotes.emote.edit.permission:
+    description: Gives access to /emote edit permission
+    default: op
+  emotes.emote.new: 
+    description: Gives access to /emote new
+    default: op
+  emotes.emote.delete:
+    description: Gives access to /emote delete
+    default: op
+  emotes.emote.list:
+    description: Gives access to /emote
+    default: op
+  emotes.emote.help:
+    description: Gives access to /emote help
+    default: op
+  emotes.emote.use.*:
+    description: Gives access to use all custom emotes
     default: op
