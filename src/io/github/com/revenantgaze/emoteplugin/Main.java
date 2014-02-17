@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import io.github.com.revenantgaze.emoteplugin.commands.ArgueCmd;
+import io.github.com.revenantgaze.emoteplugin.commands.EmoteCmd;
 import io.github.com.revenantgaze.emoteplugin.commands.EmotesCmd;
 import io.github.com.revenantgaze.emoteplugin.commands.FacepalmCmd;
 import io.github.com.revenantgaze.emoteplugin.commands.FlailCmd;
@@ -23,7 +24,6 @@ import io.github.com.revenantgaze.emoteplugin.commands.TeabagCmd;
 import io.github.com.revenantgaze.emoteplugin.commands.WaveCmd;
 import io.github.com.revenantgaze.emoteplugin.commands.WhistleCmd;
 import io.github.com.revenantgaze.emoteplugin.commands.WinkCmd;
-import io.github.com.revenantgaze.emoteplugin.unimplemented.EmoteCmd;
 
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -37,13 +37,96 @@ public class Main extends JavaPlugin {
 	public Plugin instance;
 
 	public static ConfigManager cm;
-
+	
+	File defaultConfigFile = new File(this.getDataFolder(), "config.yml");
 	File emoteConfigFile = new File(this.getDataFolder(), "emotes.yml");
+	
 	FileConfiguration emoteConfig = YamlConfiguration
 			.loadConfiguration(emoteConfigFile);
+	FileConfiguration defaultConfig = YamlConfiguration
+			.loadConfiguration(defaultConfigFile);
 
 	@Override
 	public void onEnable() {
+		
+		if (!defaultConfigFile.exists()) {
+
+			getLogger().info("Generating default config file...");
+
+			this.saveResource("config.yml", false);
+
+			this.getConfig()
+			.options()
+			.header("Default config file for Emotes " + this.getDescription().getVersion());
+
+			ConfigurationSection cooldownSection = this.getConfig().createSection("cooldown");
+				
+				this.getConfig().set("cooldown.cooldown", 10);
+				this.getConfig().set("cooldown.default", 10);
+				this.getConfig().set("emotes-distance", 40);
+				this.getConfig().set("use-default-emotes", true);
+				this.getConfig().set("show-target-warning", true);
+				this.getConfig().set("no-permission-message", "You do not have permission to use this emote!");
+
+			saveConfig();
+
+			getLogger().info("Config.yml has been generated!");
+
+		}
+
+		else {
+
+			getLogger().info("Found config.yml");
+
+		}
+		
+		if (!emoteConfigFile.exists()) {
+
+			getLogger().info("Generating emotes config file...");
+
+			this.getEmoteConfig()
+			.options()
+			.header("Custom emote configuration file\n"
+					+ "Set ''use-default-emotes'' to false in the main config if you do not want to have any other emotes than the ones you are adding yourself\n"
+					+ "All the emotes you create will be added to ''emotes-list'' and will be returned when doing /emote\n"
+					+ "--------------------------------------------------------------------------------------------------------\n"
+					+ "Sample setup:\n"
+					+ "When adding messages, start it from after the players name like shown below (message and sp-message)\n"
+					+ "message = emote message with a target\n"
+					+ "--------------------------------------------------------------------------------------------------------\n"
+					+ "sp-message = emote message without a target\n"
+					+ "--------------------------------------------------------------------------------------------------------\n"
+					+ "emotes:\n"
+					+ "  kiss:\n"
+					+ "    description: Kiss!\n"
+					+ "    usage: /emote use kiss\n"
+					+ "    permission: emotes.emote.kiss\n"
+					+ "    message: <s> kisses <t>! N'taww!\n"
+					+ "    sp-message-bt: <s> blows a kiss into the air. Who is able to catch it?\n"
+					+ "--------------------------------------------------------------------------------------------------------\n"
+					+ "When doing an emote with a target, <s> is the Sender, <t> is the Target\n"
+					+ "When doing the emote without a target, <s> is the Sender\n"
+					+ "--------------------------------------------------------------------------------------------------------\n"
+					+ "According to this setup, this message will equal: <s> kisses <t>! N'taww!)\n");
+
+			ConfigurationSection emoteSection = this.getEmoteConfig().createSection("emotes");
+			ConfigurationSection emoteListSection = this.getEmoteConfig().createSection(
+						"emotes-list");
+
+			this.saveEmoteConfig();
+
+			getLogger().info("Emotes.yml has been generated!");
+
+		}
+
+		else {
+
+			getLogger().info("Found emotes.yml");
+
+		}
+
+		boolean checkDefaultUse = this.getConfig().getBoolean(
+				"use-default-emotes");
 
 		if (this.getConfig().getBoolean("use-default-emotes") == true) {
 
@@ -78,101 +161,6 @@ public class Main extends JavaPlugin {
 			getLogger().info("Default emotes is disabled!");
 
 		}
-		
-		File configFile = new File(getDataFolder() + File.separator + "config.yml");
-		File emotesConfigFile = new File(getDataFolder() + File.separator + "emotes.yml");
-		
-		if (!configFile.exists()) {
-
-			getLogger().info("Generating default config file...");
-
-			this.getConfig().options().copyDefaults(true);
-
-			this.getEmoteConfig()
-			.options()
-			.header("Default config file for Emotes " + this.getDescription().getVersion());
-
-			ConfigurationSection cooldownSection = this.getConfig().createSection("cooldown");
-				
-				this.getConfig().set("cooldown.cooldown", 10);
-				this.getConfig().set("cooldown.default", 10);
-				this.getConfig().set("emotes-distance", 40);
-				this.getConfig().set("use-default-emotes", true);
-
-			saveConfig();
-
-			getLogger().info("Config.yml has been generated!");
-
-		}
-
-		else {
-
-			getLogger().info("Found config.yml");
-
-		}
-		
-		if (!emotesConfigFile.exists()) {
-
-			getLogger().info("Generating emotes config file...");
-
-			File emoteConfigFile = new File(this.getDataFolder(), "emotes.yml");
-			FileConfiguration emoteConfig = YamlConfiguration
-					.loadConfiguration(emoteConfigFile);
-			
-			emoteConfigFile = new File(getDataFolder(), "emotes.yml");
-
-			this.saveResource("emotes.yml", false);
-
-			this.getEmoteConfig()
-			.options()
-			.header("Custom emote configuration file\n"
-					+ "Set ''use-default-emotes'' to false in the main config if you do not want to have any other emotes than the ones you are adding yourself\n"
-					+ "All the emotes you create will be added to ''emotes-list'' and will be returned when doing /emote\n"
-					+ "--------------------------------------------------------------------------------------------------------\n"
-					+ "Sample setup:\n"
-					+ "When adding messages, start it from after the players name like shown below (sp-message and mp-message)\n"
-					+ "sp-message = single player message\n"
-					+ "--------------------------------------------------------------------------------------------------------\n"
-					+ "mp-message-bp = multiplayer message before target\n"
-					+ "Which is the message between the emote sender's name and the target player's name\n"
-					+ "--------------------------------------------------------------------------------------------------------\n"
-					+ "mp-message-ap = multiplayer message after target\n"
-					+ "Which is the message after the target player's name\n"
-					+ "--------------------------------------------------------------------------------------------------------\n"
-					+ "emotes:\n"
-					+ "  teabag:\n"
-					+ "    description: Teabag!\n"
-					+ "    usage: /emote teabag\n"
-					+ "    permission: emotes.commands.teabag\n"
-					+ "    sp-message: argues incoherently into the air!\n"
-					+ "    mp-message-bt: teabags\n"
-					+ "    mp-message-at: ! How embarassing!\n"
-					+ "--------------------------------------------------------------------------------------------------------\n"
-					+ "Emote without a target: <emote sender> <sp-message>\n"
-					+ "Emote with a target: <emote sender> <mp-message-bt> <target> <mp-message-at>\n"
-					+ "--------------------------------------------------------------------------------------------------------\n"
-					+ "According to this setup, this message will equal: <player> teabags <target>! How embarassing!)\n");
-
-			ConfigurationSection emoteSection = this.getEmoteConfig().createSection("emotes");
-			ConfigurationSection emoteListSection = this.getEmoteConfig().createSection(
-						"emotes-list");
-
-			this.saveEmoteConfig();
-
-			getLogger().info("Emotes.yml has been generated!");
-
-		}
-
-		else {
-
-			getLogger().info("Found emotes.yml");
-
-		}
-
-		FileConfiguration config = getConfig();
-
-		boolean checkDefaultUse = this.getConfig().getBoolean(
-				"use-default-emotes");
 
 		getLogger().info(
 				"Emotes v" + this.getDescription().getVersion()
@@ -235,6 +223,18 @@ public class Main extends JavaPlugin {
 		}
 
 		return emoteConfig;
+
+	}
+	
+	public FileConfiguration getConfig() {
+
+		if (defaultConfig == null) {
+
+			this.reloadConfig();
+
+		}
+
+		return defaultConfig;
 
 	}
 
