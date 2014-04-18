@@ -2,7 +2,6 @@ package io.github.com.revenantgaze.emoteplugin.commands;
 
 import java.util.List;
 
-import io.github.com.revenantgaze.emoteplugin.ConfigManager;
 import io.github.com.revenantgaze.emoteplugin.Cooldown;
 import io.github.com.revenantgaze.emoteplugin.Main;
 
@@ -24,8 +23,6 @@ public class EmoteCmd implements CommandExecutor {
 		plugin = instance;
 
 	}
-
-	public static ConfigManager cm;
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label,
 			String[] args) {
@@ -245,31 +242,70 @@ public class EmoteCmd implements CommandExecutor {
 												.getLocation().distanceSquared(
 														p.getLocation());
 
-										if (senderWorld == targetWorld) {
+										if (emotesDistance == -1) {
 
-											if (senderLocation < distanceSquared) {
+											String emoteMessage = plugin
+													.getEmoteConfig()
+													.getString(
+															"emotes."
+																	+ emoteName
+																	+ ".sp-message");
+											String emoteMessageWithName = emoteMessage
+													.replace("<s>", senderName);
+											String emoteColour = plugin
+													.getEmoteConfig()
+													.getString(
+															"emotes."
+																	+ emoteName
+																	+ ".colour");
+											String emoteColoured = (emoteColour + emoteMessageWithName)
+													.replaceAll(
+															"(&([a-f0-9]))",
+															"\u00A7$2");
 
-												String emoteMessage = plugin
-														.getEmoteConfig()
-														.getString(
-																"emotes."
-																		+ emoteName
-																		+ ".sp-message");
-												String emoteMessageWithName = emoteMessage
-														.replace("<s>",
-																senderName);
-												String emoteColour = plugin
-														.getEmoteConfig()
-														.getString(
-																"emotes."
-																		+ emoteName
-																		+ ".colour");
-												String emoteColoured = (emoteColour + emoteMessageWithName)
-														.replaceAll(
-																"(&([a-f0-9]))",
-																"\u00A7$2");
+											p.sendMessage(emoteColoured);
 
-												p.sendMessage(emoteColoured);
+										}
+
+										else {
+
+											if (senderWorld == targetWorld) {
+
+												if (senderLocation < distanceSquared) {
+
+													String emoteLanguageString = plugin
+															.getConfig()
+															.getString(
+																	"language-string.emote");
+													String emoteMessage = plugin
+															.getEmoteConfig()
+															.getString(
+																	"emotes."
+																			+ emoteName
+																			+ ".sp-message");
+													String emoteMessageWithName = emoteMessage
+															.replace("<s>",
+																	senderName);
+													String emoteColour = plugin
+															.getEmoteConfig()
+															.getString(
+																	"emotes."
+																			+ emoteName
+																			+ ".colour");
+													String emoteColoured = (emoteColour + emoteMessageWithName)
+															.replaceAll(
+																	"(&([a-f0-9]))",
+																	"\u00A7$2");
+													String emoteLanguage = emoteLanguageString
+															.replace("<emote>",
+																	emoteColoured)
+															.replaceAll(
+																	"(&([a-f0-9]))",
+																	"\u00A7$2");
+
+													p.sendMessage(emoteLanguage);
+
+												}
 
 											}
 
@@ -285,7 +321,30 @@ public class EmoteCmd implements CommandExecutor {
 
 								}
 
-								return true;
+								else {
+
+									int cooldown = (int) (CooldownValue - ((System
+											.currentTimeMillis() - (Cooldown.lastEmote
+											.get(senderPlayer.getName()))) / 1000));
+
+									String emoteCooldownWarning = plugin
+											.getConfig()
+											.getString(
+													"language-string.stillcooldown");
+									String cooldownLeft = Integer
+											.toString(cooldown);
+
+									senderPlayer
+											.sendMessage(emoteCooldownWarning
+													.replace("<cooldown>",
+															cooldownLeft)
+													.replaceAll(
+															"(&([a-f0-9]))",
+															"\u00A7$2"));
+									
+									return true;
+
+								}
 
 							}
 
@@ -530,58 +589,194 @@ public class EmoteCmd implements CommandExecutor {
 														.distanceSquared(
 																p.getLocation());
 
-												if (senderWorld == targetWorld) {
+												if (emotesDistance == -1) {
 
-													if (senderLocation < distanceSquared) {
+													String emoteLanguageString = plugin
+															.getConfig()
+															.getString(
+																	"language-string.emote");
+													String emoteMessage = plugin
+															.getEmoteConfig()
+															.getString(
+																	"emotes."
+																			+ emoteName
+																			+ ".message");
+													String emoteMessageWithName = emoteMessage
+															.replace("<s>",
+																	senderName);
+													String emoteMessageWithNames = emoteMessageWithName
+															.replace("<t>",
+																	targetName);
+													String emoteColour = plugin
+															.getEmoteConfig()
+															.getString(
+																	"emotes."
+																			+ emoteName
+																			+ ".colour");
+													String emoteColoured = (emoteColour + emoteMessageWithNames)
+															.replaceAll(
+																	"(&([a-f0-9]))",
+																	"\u00A7$2");
+													String emoteLanguage = emoteLanguageString
+															.replace("<emote>",
+																	emoteColoured)
+															.replaceAll(
+																	"(&([a-f0-9]))",
+																	"\u00A7$2");
 
-														String emoteMessage = plugin
-																.getEmoteConfig()
+													p.sendMessage(emoteLanguage);
+
+													if (showTargetWarning == true) {
+
+														String emoteWarningString1 = plugin
+																.getConfig()
 																.getString(
-																		"emotes."
-																				+ emoteName
-																				+ ".message");
-														String emoteMessageWithName = emoteMessage
-																.replace("<s>",
-																		senderName);
-														String emoteMessageWithNames = emoteMessageWithName
-																.replace("<t>",
-																		targetName);
-														String emoteColour = plugin
-																.getEmoteConfig()
+																		"language-string.warning.sameworld");
+														String emoteWarningString2 = plugin
+																.getConfig()
 																.getString(
-																		"emotes."
-																				+ emoteName
-																				+ ".colour");
-														String emoteColoured = (emoteColour + emoteMessageWithNames)
-																.replaceAll(
-																		"(&([a-f0-9]))",
-																		"\u00A7$2");
+																		"language-string.warning.diffworld");
 
-														p.sendMessage(emoteColoured);
+														Player targetPlayer = Bukkit
+																.getPlayer(targetName);
 
-														if (showTargetWarning == true) {
+														World targetWarningWorld = targetPlayer
+																.getWorld();
 
-															Player targetPlayer = Bukkit
-																	.getPlayer(targetName);
+														if (senderWorld == targetWarningWorld) {
 
 															int senderDistance = (int) Math
 																	.round(senderLocation);
 
+															String senderDistanceString = Integer
+																	.toString(senderDistance);
+
 															targetPlayer
-																	.sendMessage(ChatColor.BLUE
-																			+ "You have just been emoted by "
-																			+ ChatColor.RED
-																			+ senderName
-																			+ ChatColor.BLUE
-																			+ ", "
-																			+ ChatColor.RED
-																			+ senderDistance
-																			+ ChatColor.BLUE
-																			+ " blocks away!");
+																	.sendMessage(emoteWarningString1
+																			.replace(
+																					"<distance>",
+																					senderDistanceString)
+																			.replace(
+																					"<sender>",
+																					senderPlayer
+																							.getName())
+																			.replaceAll(
+																					"(&([a-f0-9]))",
+																					"\u00A7$2"));
 
 														}
 
-														return true;
+														else {
+
+															targetPlayer
+																	.sendMessage(emoteWarningString2
+																			.replaceAll(
+																					"(&([a-f0-9]))",
+																					"\u00A7$2"));
+
+														}
+
+													}
+
+												}
+
+												else {
+
+													if (senderWorld == targetWorld) {
+
+														if (senderLocation < distanceSquared) {
+
+															String emoteLanguageString = plugin
+																	.getConfig()
+																	.getString(
+																			"language-string.emote");
+															String emoteMessage = plugin
+																	.getEmoteConfig()
+																	.getString(
+																			"emotes."
+																					+ emoteName
+																					+ ".message");
+															String emoteMessageWithName = emoteMessage
+																	.replace(
+																			"<s>",
+																			senderName);
+															String emoteMessageWithNames = emoteMessageWithName
+																	.replace(
+																			"<t>",
+																			targetName);
+															String emoteColour = plugin
+																	.getEmoteConfig()
+																	.getString(
+																			"emotes."
+																					+ emoteName
+																					+ ".colour");
+															String emoteColoured = (emoteColour + emoteMessageWithNames)
+																	.replaceAll(
+																			"(&([a-f0-9]))",
+																			"\u00A7$2");
+															String emoteLanguage = emoteLanguageString
+																	.replace(
+																			"<emote>",
+																			emoteColoured)
+																	.replaceAll(
+																			"(&([a-f0-9]))",
+																			"\u00A7$2");
+
+															p.sendMessage(emoteLanguage);
+
+															if (showTargetWarning == true) {
+
+																String emoteWarningString1 = plugin
+																		.getConfig()
+																		.getString(
+																				"language-string.warning.sameworld");
+																String emoteWarningString2 = plugin
+																		.getConfig()
+																		.getString(
+																				"language-string.warning.diffworld");
+
+																Player targetPlayer = Bukkit
+																		.getPlayer(targetName);
+
+																World targetWarningWorld = targetPlayer
+																		.getWorld();
+
+																if (senderWorld == targetWarningWorld) {
+
+																	int senderDistance = (int) Math
+																			.round(senderLocation);
+
+																	String senderDistanceString = Integer
+																			.toString(senderDistance);
+
+																	targetPlayer
+																			.sendMessage(emoteWarningString1
+																					.replace(
+																							"<distance>",
+																							senderDistanceString)
+																					.replace(
+																							"<sender>",
+																							senderPlayer
+																									.getName())
+																					.replaceAll(
+																							"(&([a-f0-9]))",
+																							"\u00A7$2"));
+
+																}
+
+																else {
+
+																	targetPlayer
+																			.sendMessage(emoteWarningString2
+																					.replaceAll(
+																							"(&([a-f0-9]))",
+																							"\u00A7$2"));
+
+																}
+
+															}
+
+														}
 
 													}
 
@@ -599,14 +794,25 @@ public class EmoteCmd implements CommandExecutor {
 
 										else {
 
+											int cooldown = (int) (CooldownValue - ((System
+													.currentTimeMillis() - (Cooldown.lastEmote
+													.get(senderPlayer.getName()))) / 1000));
+
+											String emoteCooldownWarning = plugin
+													.getConfig()
+													.getString(
+															"language-string.stillcooldown");
+											String cooldownLeft = Integer
+													.toString(cooldown);
+
 											senderPlayer
-													.sendMessage(ChatColor.RED
-															+ "You have "
-															+ (CooldownValue - ((System
-																	.currentTimeMillis() - (Cooldown.lastEmote
-																	.get(senderPlayer
-																			.getName()))) / 1000))
-															+ " seconds left before you can use another emote.");
+													.sendMessage(emoteCooldownWarning
+															.replace(
+																	"<cooldown>",
+																	cooldownLeft)
+															.replaceAll(
+																	"(&([a-f0-9]))",
+																	"\u00A7$2"));
 
 											return true;
 
