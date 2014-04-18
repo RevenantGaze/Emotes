@@ -1,6 +1,6 @@
 name: Emotes
 main: io.github.com.revenantgaze.emoteplugin.Main
-version: 2.0
+version: 2.1.1
 author: RevenantGaze
 website: http://dev.bukkit.org/bukkit-plugins/emotes/
 commands:
@@ -9,90 +9,6 @@ commands:
     usage: /emotes
     default: op
     permission: emotes.command.emotes.use
-  kiss:
-    description: Kiss another player!
-    usage: 
-    default: op
-    permission: emotes.command.kiss
-  hug:
-    description: Hug another player!
-    usage: 
-    default: op
-    permission: emotes.command.hug
-  wave:
-    description: Wave at another player!
-    usage: 
-    default: op
-    permission: emotes.command.wave
-  glomp:
-    description: Glomp a player!
-    usage: 
-    default: op
-    permission: emotes.command.glomp
-  wink:
-    description: Wink to a player!
-    usage: 
-    default: op
-    permission: emotes.command.wink
-  ekick:
-    description: Kick a player in their private parts!
-    usage: 
-    default: op
-    permission: emotes.command.kick
-    aliases: 
-      - emote_kick
-      - emoteskick
-      - emotekick
-  teabag:
-    description: Teabag a player!
-    usage: 
-    default: op
-    permission: emotes.command.teabag
-  flail:
-    description: Flail!
-    usage: 
-    default: op
-    permission: emotes.command.flail
-  grumble:
-    description: Grumble!
-    usage: 
-    default: op
-    permission: emotes.command.grumble
-  argue:
-    description: Argue with a player!
-    usage: 
-    default: op
-    permission: emotes.command.argue
-  love:
-    description: Show your love to a player!
-    usage: 
-    default: op
-    permission: emotes.command.love
-  hate:
-    description: Express your hate towards a player!
-    usage: 
-    default: op
-    permission: emotes.command.hate
-  poke:
-    description: Poke a player!
-    usage: 
-    default: op
-    permission: emotes.command.poke
-  smack:
-    description: Smack a player!
-    usage: 
-    default: op
-    permission: emotes.command.smack
-  facepalm:
-    description: Facepalm!
-    usage: 
-    default: op
-    permission: emotes.command.facepalm
-  whistle:
-    description: Whistle!
-    usage: 
-    default: op
-    permission: emotes.command.whistle
   emote:
     description: Do a custom emote!
     usage: /emote
@@ -103,9 +19,7 @@ permissions:
     description: Gives access to all Emotes commands
     children: 
       emotes.command.*: true
-      emotes.command.argue: true
       emotes.command.emotes.*: true
-      emotes.command.emotes.list: true
       emotes.command.emotes.cooldown: true
       emotes.command.emotes.cooldown.*: true
       emotes.command.emotes.cooldown.change: true
@@ -114,21 +28,6 @@ permissions:
       emotes.command.emotes.setdistance: true
       emotes.command.emotes.version: true
       emotes.command.emotes.use: true
-      emotes.command.facepalm: true
-      emotes.command.flail: true
-      emotes.command.glomp: true
-      emotes.command.grumble: true
-      emotes.command.hate: true
-      emotes.command.hug: true
-      emotes.command.kick: true
-      emotes.command.kiss: true
-      emotes.command.love: true
-      emotes.command.poke: true
-      emotes.command.smack: true
-      emotes.command.teabag: true
-      emotes.command.wave: true
-      emotes.command.whistle: true
-      emotes.command.wink: true
       emotes.emote.*: true
       emotes.emote.edit.*: true
       emotes.emote.edit.message: true
@@ -143,9 +42,7 @@ permissions:
   emotes.command.*:
     description: Gives access to all commands that needs the emotes.command permission
     children:
-      emotes.command.argue: true
       emotes.command.emotes.*: true
-      emotes.command.emotes.list: true
       emotes.command.emotes.cooldown: true
       emotes.command.emotes.cooldown.*: true
       emotes.command.emotes.cooldown.change: true
@@ -154,28 +51,12 @@ permissions:
       emotes.command.emotes.setdistance: true
       emotes.command.emotes.version: true
       emotes.command.emotes.use: true
-      emotes.command.facepalm: true
-      emotes.command.flail: true
-      emotes.command.glomp: true
-      emotes.command.grumble: true
-      emotes.command.hate: true
-      emotes.command.hug: true
-      emotes.command.kick: true
-      emotes.command.kiss: true
-      emotes.command.love: true
-      emotes.command.poke: true
-      emotes.command.smack: true
-      emotes.command.teabag: true
-      emotes.command.wave: true
-      emotes.command.whistle: true
-      emotes.command.wink: true
   emotes.command.argue:
     description: Gives access to /argue
     default: op
   emotes.command.emotes.*:
     description: Gives access to all /emotes commands
     children:
-      emotes.command.emotes.list: true
       emotes.command.emotes.cooldown: true
       emotes.command.emotes.cooldown.*: true
       emotes.command.emotes.cooldown.change: true
@@ -184,9 +65,6 @@ permissions:
       emotes.command.emotes.setdistance: true
       emotes.command.emotes.version: true
       emotes.command.emotes.use: true
-    default: op
-  emotes.command.emotes.list:
-    description: Gives access to /emotes list
     default: op
   emotes.command.emotes.cooldown:
     description: Gives access to /emotes cooldown
@@ -215,51 +93,6 @@ permissions:
     default: op
   emotes.command.emotes.use:
     description: Gives access to /emotes
-    default: op
-  emotes.command.facepalm:
-    description: Gives access to /facepalm
-    default: op
-  emotes.command.flail:
-    description: Gives access to /flail
-    default: op
-  emotes.command.glomp:
-    description: Gives access to /glomp
-    default: op
-  emotes.command.grumble:
-    description: Gives access to /grumble
-    default: op
-  emotes.command.hate:
-    description: Gives access to /hate
-    default: op
-  emotes.command.hug:
-    description: Gives access to /hug
-    default: op
-  emotes.command.kick:
-    description: Gives access to /ekick, /emote_kick, /emoteskick or /emotekick
-    default: op
-  emotes.command.kiss:
-    description: Gives access to /kiss
-    default: op
-  emotes.command.love:
-    description: Gives access to /love
-    default: op
-  emotes.command.poke:
-    description: Gives access to /poke
-    default: op
-  emotes.command.smack:
-    description: Gives access to /smack
-    default: op
-  emotes.command.teabag:
-    description: Gives access to /teabag
-    default: op
-  emotes.command.wave:
-    description: Gives access to /wave
-    default: op
-  emotes.command.whistle:
-    description: Gives access to /whistle
-    default: op
-  emotes.command.wink:
-    description: Gives access to /wink
     default: op
   emotes.emote.*: 
     description: Gives access to all /emote commands
